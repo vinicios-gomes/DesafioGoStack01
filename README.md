@@ -1,4 +1,9 @@
-# Desafio 01. Conceitos do NodeJS
+#  Desafio 01
+` Projeto realizado para a conclusão do desafio de Conceitos do NodeJS.
+  Curso GoStack Rocketseat.
+` 
+
+## Instruções
 
 Crie uma aplicação do zero utilizando Express.
 
