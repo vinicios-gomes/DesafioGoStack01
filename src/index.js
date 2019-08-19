@@ -3,6 +3,12 @@ const server = express();
 
 server.use(express.json());
 
+/*
+ * Inicialização da Variavel contadora, servira para contar quantas requisicoes foram feitas.
+ */
+
+let cont = 0;
+
 const projects = [
   {
     id: "1",
@@ -16,12 +22,23 @@ const projects = [
   }
 ];
 
-let cont = 0;
-server.use((req, res, next) => {
-  cont = cont + 1;
+/**
+ * Middleware Contador
+ */
+function ContadorRequisicoes(req, res, next) {
+  cont++;
   console.log(`Requisições feitas até agora ${cont}`);
   next();
-});
+}
+
+/**
+ * Habilitando ele para ser usado globalmente
+ */
+server.use(ContadorRequisicoes);
+
+/**
+ * Middleware para checagem de projetos
+ */
 
 function checkProjectsExist(req, res, next) {
   if (!projects[req.params.id]) {
@@ -29,6 +46,10 @@ function checkProjectsExist(req, res, next) {
   }
   return next();
 }
+
+/**
+ * Rotas do Projeto
+ */
 
 server.get("/projects", (req, res) => {
   return res.json(projects);
@@ -59,6 +80,10 @@ server.delete("/projects/:id", checkProjectsExist, (req, res) => {
 
   return res.json(projects);
 });
+
+/**
+ * Rota para Tasks
+ */
 
 server.post("/projects/:id/tasks", checkProjectsExist, (req, res) => {
   const { id } = req.params;
