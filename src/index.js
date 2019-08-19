@@ -16,6 +16,20 @@ const projects = [
   }
 ];
 
+let cont = 0;
+server.use((req, res, next) => {
+  cont = cont + 1;
+  console.log(`Requisições feitas até agora ${cont}`);
+  next();
+});
+
+function checkProjectsExist(req, res, next) {
+  if (!projects[req.params.id]) {
+    return res.send({ message: "Projeto não existe" });
+  }
+  return next();
+}
+
 server.get("/projects", (req, res) => {
   return res.json(projects);
 });
@@ -29,7 +43,7 @@ server.post("/projects", (req, res) => {
   return res.json(projects);
 });
 
-server.put("/projects/:id", (req, res) => {
+server.put("/projects/:id", checkProjectsExist, (req, res) => {
   const { id } = req.params;
 
   const { title } = req.body;
@@ -38,7 +52,7 @@ server.put("/projects/:id", (req, res) => {
   return res.json(projects);
 });
 
-server.delete("/projects/:id", (req, res) => {
+server.delete("/projects/:id", checkProjectsExist, (req, res) => {
   const { id } = req.params;
 
   projects.splice(id, 1);
@@ -46,7 +60,7 @@ server.delete("/projects/:id", (req, res) => {
   return res.json(projects);
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
+server.post("/projects/:id/tasks", checkProjectsExist, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
